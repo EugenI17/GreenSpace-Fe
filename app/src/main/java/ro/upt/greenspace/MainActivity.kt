@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Green),
+                .background(Color(0xFF236c1b)),
             contentAlignment = Alignment.Center
         ) {
             Button(
