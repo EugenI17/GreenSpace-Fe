@@ -1,6 +1,7 @@
 package ro.upt.greenspace
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,7 +36,17 @@ class MainActivity : ComponentActivity() {
 
     private fun openCamera() {
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+    }
+
+    private fun openPlantNameScreen(photoUri: Uri) {
+        setContent {
+            GreenSpaceFeTheme {
+                PlantNameScreen(photoUri = photoUri) { plantName ->
+                    // Handle saving the plant name
+                }
+            }
+        }
     }
 
     @Composable
@@ -60,6 +71,20 @@ class MainActivity : ComponentActivity() {
     fun GreenPagePreview() {
         GreenSpaceFeTheme {
             GreenPage()
+        }
+    }
+
+    companion object {
+        const val REQUEST_IMAGE_CAPTURE = 1
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageUri = data?.data
+            if (imageUri != null) {
+                openPlantNameScreen(imageUri)
+            }
         }
     }
 }
