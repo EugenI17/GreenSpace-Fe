@@ -25,22 +25,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GreenSpaceFeTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    GreenPage()
+                val navController = rememberNavController()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavHost(navController = navController, startDestination = "greenPage") {
+                        composable("greenPage") { GreenPage(navController) }
+                        composable("addHome") { AddHomeScreen() }
+                    }
                 }
             }
         }
@@ -61,7 +70,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun GreenPage() {
+    fun GreenPage(navController: androidx.navigation.NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -111,10 +120,12 @@ class MainActivity : ComponentActivity() {
                         )
                 ) {
                     Button(
-                        onClick = { /* Add functionality */ },
+                        onClick = {
+                            navController.navigate("addHome")
+                        },
                         modifier = Modifier
                             .padding(2.dp)
-                            .width(buttonWidth), // Apply consistent width
+                            .width(buttonWidth),
                         contentPadding = PaddingValues(25.dp),
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
@@ -165,8 +176,9 @@ class MainActivity : ComponentActivity() {
     @Preview(showBackground = true)
     @Composable
     fun GreenPagePreview() {
+        val navController = rememberNavController()
         GreenSpaceFeTheme {
-            GreenPage()
+            GreenPage(navController)
         }
     }
 
