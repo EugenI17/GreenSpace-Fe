@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
 
 class MainActivity : ComponentActivity() {
@@ -75,14 +77,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .padding(bottom = 16.dp)
                         .size(200.dp)
+                        .shadow(80.dp, shape = RoundedCornerShape(100.dp))
                 )
 
                 Text(
                     text = "GreenSpace",
-                    color = Color.Black,
-                    fontSize = 55.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 50.dp)
+                    modifier = Modifier.padding(bottom = 50.dp),
+                    style = TextStyle(
+                        fontSize = 50.sp,
+                        fontWeight = FontWeight.Bold,
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF1B5E20),
+                                Color(0xFF4E342E)
+                            )
+                        )
+                    )
                 )
 
                 val buttonWidth = 200.dp
