@@ -7,8 +7,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,9 +19,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.res.painterResource
 import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,7 +53,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             GreenSpaceFeTheme {
                 PlantNameScreen(photoUri = photoUri) { plantName ->
-                    // Handle saving the plant name
                 }
             }
         }
@@ -54,14 +63,91 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF236c1b)),
+                .background(Color(0xFFd1d5ca)),
             contentAlignment = Alignment.Center
         ) {
-            Button(
-                onClick = { openCamera() },
-                modifier = Modifier.padding(16.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Add New Plant")
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .size(200.dp)
+                )
+
+                Text(
+                    text = "GreenSpace",
+                    color = Color.Black,
+                    fontSize = 55.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 50.dp)
+                )
+
+                val buttonWidth = 200.dp
+
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 40.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF77B97F),
+                                    Color(0xFF5A8A64)
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    Button(
+                        onClick = { /* Add functionality */ },
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .width(buttonWidth), // Apply consistent width
+                        contentPadding = PaddingValues(25.dp),
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Text(
+                            text = "Add Home",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 120.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF77B97F),
+                                    Color(0xFF5A8A64)
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                ) {
+                    Button(
+                        onClick = { /* Add functionality */ },
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .width(buttonWidth),
+                        contentPadding = PaddingValues(25.dp),
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Text(
+                            text = "View Homes",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                        )
+                    }
+                }
             }
         }
     }
