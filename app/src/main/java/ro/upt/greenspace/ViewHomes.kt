@@ -25,19 +25,30 @@ class ViewHomes : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ViewHomesScreen()
+//      ViewHomesScreen()
         }
     }
 }
 
 @Composable
-fun ViewHomesScreen() {
+fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFd1d5ca)), // Light background
+            .background(Color(0xFFd1d5ca)),
         contentAlignment = Alignment.Center
     ) {
+        IconButton(
+            onClick = { navController.navigateUp() },
+            modifier = Modifier
+                .padding(20.dp)
+                .align(Alignment.TopStart)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.arrow),
+                contentDescription = "Back"
+            )
+        }
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -156,5 +167,5 @@ fun ViewHomesScreen() {
 @Preview(showBackground = true)
 @Composable
 fun ViewHomesScreenPreview() {
-    ViewHomesScreen()
+//  ViewHomesScreen()
 }

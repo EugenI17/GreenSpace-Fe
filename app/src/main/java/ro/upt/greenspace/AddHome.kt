@@ -27,22 +27,34 @@ class AddHome : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-      AddHomeScreen()
+//      AddHomeScreen()
     }
   }
 }
 
 @Composable
-fun AddHomeScreen() {
+fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
   var name by remember { mutableStateOf(TextFieldValue("")) }
   var city by remember { mutableStateOf(TextFieldValue("")) }
 
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .background(Color(0xFFd1d5ca)), // Light background
+      .background(Color(0xFFd1d5ca)),
     contentAlignment = Alignment.Center
   ) {
+    IconButton(
+      onClick = { navController.navigateUp() },
+      modifier = Modifier
+        .padding(20.dp)
+        .align(Alignment.TopStart)
+    ) {
+      Image(
+        painter = painterResource(id = R.drawable.arrow),
+        contentDescription = "Back"
+      )
+    }
+
     Column(
       modifier = Modifier
         .padding(horizontal = 16.dp)
@@ -90,8 +102,8 @@ fun AddHomeScreen() {
           .fillMaxWidth()
           .padding(bottom = 16.dp),
         colors = OutlinedTextFieldDefaults.colors(
-          focusedTextColor = Color.Black,
-          unfocusedTextColor = Color.Black,
+          focusedTextColor = Color.White,
+          unfocusedTextColor = Color.White,
           focusedBorderColor = Color.White,
           unfocusedBorderColor = Color.White,
           focusedLabelColor = Color.White,
@@ -108,8 +120,8 @@ fun AddHomeScreen() {
           .fillMaxWidth()
           .padding(bottom = 16.dp),
         colors = OutlinedTextFieldDefaults.colors(
-          focusedTextColor = Color.Black,
-          unfocusedTextColor = Color.Black,
+          focusedTextColor = Color.White,
+          unfocusedTextColor = Color.White,
           focusedBorderColor = Color.White,
           unfocusedBorderColor = Color.White,
           focusedLabelColor = Color.White,
@@ -142,8 +154,8 @@ fun AddHomeScreen() {
   }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AddHomeScreenPreview() {
-  AddHomeScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AddHomeScreenPreview() {
+//  AddHomeScreen()
+//}
