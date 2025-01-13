@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ro.upt.greenspace.data.HomeRepository
 
 class ViewHomes : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +34,8 @@ class ViewHomes : ComponentActivity() {
 
 @Composable
 fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
+    val homes = remember { HomeRepository.getAllHomes() } // Fetch mock data
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -49,6 +53,7 @@ fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
                 contentDescription = "Back"
             )
         }
+
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -88,81 +93,39 @@ fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
                 )
             )
 
-            // Buttons for "Home 1," "Home 2," and "Home 3"
-            Button(
-                onClick = {  navController.navigate("viewHome") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Home 1",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF1B5E20),
-                                Color(0xFF4E342E)
+            // Dynamically create buttons for each home
+            homes.forEach { home ->
+                Button(
+                    onClick = {
+                        // Navigate to viewHome with home ID or details
+                        navController.navigate("viewHome/${home.id}")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 15.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = home.name,
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF1B5E20),
+                                    Color(0xFF4E342E)
+                                )
                             )
                         )
                     )
-                )
-            }
-
-            Button(
-                onClick = { /* Handle Home 2 action */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Home 2",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF1B5E20),
-                                Color(0xFF4E342E)
-                            )
-                        )
-                    )
-                )
-            }
-
-            Button(
-                onClick = { /* Handle Home 3 action */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 15.dp)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(
-                    text = "Home 3",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF1B5E20),
-                                Color(0xFF4E342E)
-                            )
-                        )
-                    )
-                )
+                }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

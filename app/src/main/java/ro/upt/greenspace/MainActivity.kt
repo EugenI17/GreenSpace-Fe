@@ -51,7 +51,10 @@ class MainActivity : ComponentActivity() {
                         composable("greenPage") { GreenPage(navController) }
                         composable("addHome") { AddHomeScreen(navController) }
                         composable("viewHomes") { ViewHomesScreen(navController) }
-                        composable("viewHome") { ViewHomeScreen(navController) }
+                        composable("viewHome/{id}") { backStackEntry ->
+                            val homeId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                            ViewHomeScreen(navController, homeId)
+                        }
                         composable("cameraPage") { CameraPage(navController) }
                     }
                 }
