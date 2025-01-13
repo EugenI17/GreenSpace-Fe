@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
                         composable("greenPage") { GreenPage(navController) }
                         composable("addHome") { AddHomeScreen(navController) }
                         composable("viewHomes") { ViewHomesScreen(navController) }
+                        composable("viewHome") { ViewHomeScreen(navController) }
                     }
                 }
             }

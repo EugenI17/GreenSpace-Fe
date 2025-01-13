@@ -90,7 +90,7 @@ fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
 
             // Buttons for "Home 1," "Home 2," and "Home 3"
             Button(
-                onClick = { /* Handle Home 1 action */ },
+                onClick = {  navController.navigate("viewHome") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 15.dp)
