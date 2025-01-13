@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import ro.upt.greenspace.data.HomeRepository
 import ro.upt.greenspace.models.Plant
+import androidx.compose.foundation.clickable
+
 
 @Composable
 fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId: Int?) {
@@ -44,12 +46,11 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
             .fillMaxSize()
             .background(Color(0xFFd1d5ca))
     ) {
-        // Back Button
         IconButton(
             onClick = { navController.navigateUp() },
             modifier = Modifier
                 .padding(20.dp)
-                .align(Alignment.TopStart) // Position at the top start
+                .align(Alignment.TopStart)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.arrow),
@@ -68,17 +69,15 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
             Text(
                 text = home.name,
                 style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 24.dp) // Add more space below title
+                modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Plant List
             home.plants.forEach { plant ->
-                PlantCard(plant = plant)
+                PlantCard(plant = plant, navController = navController)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
 
-        // Footer
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,7 +98,7 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 modifier = Modifier
-                    .padding(vertical = 16.dp) // Add top and bottom padding
+                    .padding(vertical = 16.dp)
                     .height(60.dp)
                     .width(120.dp)
             ) {
@@ -122,18 +121,20 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
 }
 
 @Composable
-fun PlantCard(plant: Plant) {
+fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color(0xFFF5F5F5))
             .padding(8.dp)
             .background(Color.White, shape = RoundedCornerShape(16.dp))
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable {
+                navController.navigate("plantDetail/${plant.name}")
+            },
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Display image if it exists
             if (plant.image != null) {
                 Image(
                     bitmap = plant.image.asImageBitmap(),

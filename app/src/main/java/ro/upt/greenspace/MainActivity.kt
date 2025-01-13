@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ro.upt.greenspace.data.HomeRepository
 import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
 
 class MainActivity : ComponentActivity() {
@@ -56,6 +57,12 @@ class MainActivity : ComponentActivity() {
                             ViewHomeScreen(navController, homeId)
                         }
                         composable("cameraPage") { CameraPage(navController) }
+                        composable("plantDetail/{plantName}") { backStackEntry ->
+                            val plantName = backStackEntry.arguments?.getString("plantName")
+                            val plant = HomeRepository.getAllPlants().find { it.name == plantName }
+                            PlantDetailsScreen(navController, plant)
+                        }
+
                     }
                 }
             }

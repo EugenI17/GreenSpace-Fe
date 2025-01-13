@@ -43,4 +43,7 @@ object HomeRepository {
 
     fun getAllHomes(): List<Home> = mockHomes
     fun getHomeById(id: Int): Home? = mockHomes.find { it.id == id }
+    fun getAllPlants(): List<Plant> {
+        return mockHomes.flatMap { it.plants }
+    }
 }

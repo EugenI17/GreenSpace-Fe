@@ -93,11 +93,9 @@ fun ViewHomesScreen(navController: androidx.navigation.NavHostController) {
                 )
             )
 
-            // Dynamically create buttons for each home
             homes.forEach { home ->
                 Button(
                     onClick = {
-                        // Navigate to viewHome with home ID or details
                         navController.navigate("viewHome/${home.id}")
                     },
                     modifier = Modifier
