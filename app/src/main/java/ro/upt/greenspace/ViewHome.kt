@@ -58,14 +58,12 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
             )
         }
 
-        // Main Content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 32.dp), // Add vertical padding
+                .padding(horizontal = 16.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header Title with Extra Padding
             Text(
                 text = home.name,
                 style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold),
@@ -147,7 +145,6 @@ fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Display plant name
             Text(
                 text = plant.name,
                 style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),

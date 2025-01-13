@@ -22,6 +22,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ro.upt.greenspace.models.Home
+import ro.upt.greenspace.models.HomeRequest
+import ro.upt.greenspace.service.ApiClient
 
 class AddHome : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +42,8 @@ class AddHome : ComponentActivity() {
 fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
   var name by remember { mutableStateOf(TextFieldValue("")) }
   var city by remember { mutableStateOf(TextFieldValue("")) }
+  var errorMessage by remember { mutableStateOf<String?>(null) }
+  var successMessage by remember { mutableStateOf<String?>(null) }
 
   Box(
     modifier = Modifier
@@ -93,7 +101,6 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
           )
         )
       )
-      // Input field for name
       OutlinedTextField(
         value = name,
         onValueChange = { name = it },
@@ -110,8 +117,6 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
           unfocusedLabelColor = Color.White
         )
       )
-
-      // Input field for city
       OutlinedTextField(
         value = city,
         onValueChange = { city = it },
@@ -128,9 +133,34 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
           unfocusedLabelColor = Color.White
         )
       )
+      errorMessage?.let {
+        Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
+      }
+
+      successMessage?.let {
+        Text(text = it, color = Color.Green, modifier = Modifier.padding(bottom = 16.dp))
+      }
 
       Button(
-        onClick = { /* Add functionality */ },
+        onClick = {
+          if (name.text.isEmpty() || city.text.isEmpty()) {
+            errorMessage = "Please fill in all fields."
+            successMessage = null
+          } else {
+            errorMessage = null
+            createHomeApiCall(
+              name = name.text,
+              city = city.text,
+              onSuccess = {
+                successMessage = "Home added successfully!"
+                navController.navigateUp()
+              },
+              onError = { error ->
+                errorMessage = error
+              }
+            )
+          }
+        },
         modifier = Modifier
           .padding(top = 16.dp)
           .height(50.dp),
@@ -149,6 +179,29 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
             )
           )
         )
+      }
+    }
+  }
+}
+
+fun createHomeApiCall(
+  name: String,
+  city: String,
+  onSuccess: () -> Unit,
+  onError: (String) -> Unit
+) {
+  val apiService = ApiClient.homeApiService
+  val homeRequest = HomeRequest(name = name, city = city)
+
+  CoroutineScope(Dispatchers.IO).launch {
+    try {
+      apiService.createHome(homeRequest)
+      CoroutineScope(Dispatchers.Main).launch {
+        onSuccess()
+      }
+    } catch (e: Exception) {
+      CoroutineScope(Dispatchers.Main).launch {
+        onError(e.message ?: "An error occurred")
       }
     }
   }

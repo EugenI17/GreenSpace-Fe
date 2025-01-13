@@ -32,9 +32,8 @@ import ro.upt.greenspace.R
 @Composable
 fun CameraPage(navController: androidx.navigation.NavHostController) {
     var photoBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var name by remember { mutableStateOf(TextFieldValue("")) } // Input for name
+    var name by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Camera launcher
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val photo = result.data?.extras?.get("data") as Bitmap?
@@ -76,8 +75,6 @@ fun CameraPage(navController: androidx.navigation.NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Photo Box with Open Camera Button
             Box(
                 modifier = Modifier
                     .size(300.dp)
@@ -86,14 +83,12 @@ fun CameraPage(navController: androidx.navigation.NavHostController) {
                 contentAlignment = Alignment.Center
             ) {
                 if (photoBitmap != null) {
-                    // Display captured photo
                     Image(
                         bitmap = photoBitmap!!.asImageBitmap(),
                         contentDescription = "Captured Photo",
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
-                    // Open Camera Button inside the Box
                     Button(
                         onClick = {
                             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -123,7 +118,6 @@ fun CameraPage(navController: androidx.navigation.NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Input field for name
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -143,7 +137,6 @@ fun CameraPage(navController: androidx.navigation.NavHostController) {
 
             Button(
                 onClick = {
-                    // Add functionality for saving the photo and name here
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 modifier = Modifier
