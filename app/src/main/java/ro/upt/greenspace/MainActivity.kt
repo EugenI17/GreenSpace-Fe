@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "greenPage") {
                         composable("greenPage") { GreenPage(navController) }
                         composable("addHome") { AddHomeScreen() }
+                        composable("viewHomes") { ViewHomesScreen() }
                     }
                 }
             }
