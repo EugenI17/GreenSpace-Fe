@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun ViewHomeScreen(navController: androidx.navigation.NavHostController) {
@@ -62,7 +63,9 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController) {
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = { /* Handle Add Button Click */ },
+                    onClick = {
+                        navController.navigate("cameraPage")
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     modifier = Modifier
                         .height(60.dp)
@@ -71,8 +74,14 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController) {
                     Text(
                         text = "Add",
                         style = TextStyle(
-                            fontSize = 22.sp,
-                            color = Color.Black
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF1B5E20),
+                                    Color(0xFF4E342E)
+                                )
+                            )
                         )
                     )
                 }

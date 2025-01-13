@@ -1,5 +1,6 @@
 package ro.upt.greenspace
 
+import CameraPage
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
                         composable("addHome") { AddHomeScreen(navController) }
                         composable("viewHomes") { ViewHomesScreen(navController) }
                         composable("viewHome") { ViewHomeScreen(navController) }
+                        composable("cameraPage") { CameraPage(navController) }
                     }
                 }
             }
