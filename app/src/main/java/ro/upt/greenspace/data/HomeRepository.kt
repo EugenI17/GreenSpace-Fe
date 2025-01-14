@@ -1,49 +1,28 @@
 package ro.upt.greenspace.data
 
-import android.graphics.Bitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ro.upt.greenspace.models.Home
-import ro.upt.greenspace.models.Plant
+import ro.upt.greenspace.service.ApiClient
 
 object HomeRepository {
-    private val mockBitmap: Bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888) // Placeholder bitmap
+    suspend fun getAllHomes(): List<Home> {
+        return withContext(Dispatchers.IO) {
+            try {
+                ApiClient.homeApiService.getAllHomes()
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    }
 
-    private val mockPlants = listOf(
-        Plant(
-            name = "Cactus",
-            type = "Cactus",
-            family = "Caryophyllales",
-            water = "1/2 cup every 2 weeks",
-            light = "No specific need",
-            image = null
-        ),
-        Plant(
-            name = "Fiddle Leaf Fig",
-            type = "Fig",
-            family = "Moraceae",
-            water = "1 cup weekly",
-            light = "Bright indirect light",
-            image = null
-        )
-    )
-
-    val mockHomes = listOf(
-        Home(
-            id = 1,
-            name = "Green Villa",
-            city = "Timisoara",
-            plants = mockPlants
-        ),
-        Home(
-            id = 2,
-            name = "Eco Residence",
-            city = "Cluj-Napoca",
-            plants = emptyList()
-        )
-    )
-
-    fun getAllHomes(): List<Home> = mockHomes
-    fun getHomeById(id: Int): Home? = mockHomes.find { it.id == id }
-    fun getAllPlants(): List<Plant> {
-        return mockHomes.flatMap { it.plants }
+    suspend fun getHomeById(id: Int): Home? {
+        return withContext(Dispatchers.IO) {
+            try {
+                ApiClient.homeApiService.getAllHomes().find { it.id == id }
+            } catch (e: Exception) {
+                null
+            }
+        }
     }
 }

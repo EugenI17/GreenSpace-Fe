@@ -150,9 +150,18 @@ fun fetchHomes(onSuccess: (List<Home>) -> Unit, onError: (String) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
         try {
             val homes = ApiClient.homeApiService.getAllHomes()
-            onSuccess(homes)
+            val processedHomes = homes.map { home ->
+                Home(
+                    id = home.id,
+                    name = home.name,
+                    city = home.city,
+                    plants = home.plants
+                )
+            }
+            onSuccess(processedHomes)
         } catch (e: Exception) {
             onError(e.message ?: "Failed to fetch homes")
         }
     }
 }
+

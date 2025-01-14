@@ -2,45 +2,71 @@ package ro.upt.greenspace
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.font.FontWeight
 import ro.upt.greenspace.data.HomeRepository
 import ro.upt.greenspace.models.Plant
-import androidx.compose.foundation.clickable
-
+import androidx.compose.runtime.mutableStateOf
+import ro.upt.greenspace.models.Home
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 @Composable
 fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId: Int?) {
-    val home = HomeRepository.getHomeById(homeId ?: 0)
+    val home = remember { mutableStateOf<Home?>(null) }
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf<String?>(null) }
 
-    if (home == null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFd1d5ca)),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Home not found", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+    LaunchedEffect(homeId) {
+        try {
+            homeId?.let {
+                home.value = HomeRepository.getHomeById(it)
+            }
+            isLoading.value = false
+        } catch (e: Exception) {
+            errorMessage.value = e.message ?: "Failed to fetch home details"
+            isLoading.value = false
         }
-        return
     }
 
+    when {
+        isLoading.value -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        errorMessage.value != null -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = errorMessage.value!!, color = Color.Red)
+            }
+        }
+        home.value != null -> {
+            HomeContent(navController = navController, home = home.value!!)
+        }
+    }
+}
+
+@Composable
+fun HomeContent(navController: androidx.navigation.NavHostController, home: Home) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,9 +96,21 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            home.plants.forEach { plant ->
-                PlantCard(plant = plant, navController = navController)
-                Spacer(modifier = Modifier.height(16.dp))
+            if (home.plants.isEmpty()) {
+                Text(
+                    text = "No plants available in this home.",
+                    style = TextStyle(fontSize = 18.sp, color = Color.Gray)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 80.dp)
+                ) {
+                    items(home.plants) { plant ->
+                        PlantCard(plant = plant, navController = navController)
+                    }
+                }
             }
         }
 
@@ -92,7 +130,7 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
         ) {
             Button(
                 onClick = {
-                    navController.navigate("cameraPage")
+                    navController.navigate("cameraPage/${home.id}")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 modifier = Modifier
@@ -133,9 +171,11 @@ fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            if (plant.image != null) {
+            val imageBitmap = plant.getImageBitmapForCompose()
+
+            if (imageBitmap != null) {
                 Image(
-                    bitmap = plant.image.asImageBitmap(),
+                    bitmap = imageBitmap,
                     contentDescription = plant.name,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -143,6 +183,12 @@ fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController
                         .background(Color.LightGray, shape = RoundedCornerShape(16.dp))
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+            } else {
+                Text(
+                    text = "Image not available",
+                    style = TextStyle(fontSize = 18.sp, color = Color.Gray),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
             }
 
             Text(

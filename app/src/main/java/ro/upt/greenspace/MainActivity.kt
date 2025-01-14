@@ -32,9 +32,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ro.upt.greenspace.data.HomeRepository
 import ro.upt.greenspace.ui.theme.GreenSpaceFeTheme
 
@@ -56,11 +58,16 @@ class MainActivity : ComponentActivity() {
                             val homeId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
                             ViewHomeScreen(navController, homeId)
                         }
-                        composable("cameraPage") { CameraPage(navController) }
+                        composable(
+                            route = "cameraPage/{homeId}",
+                            arguments = listOf(navArgument("homeId") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val homeId = backStackEntry.arguments?.getInt("homeId") ?: 0
+                            CameraPage(navController, homeId)
+                        }
                         composable("plantDetail/{plantName}") { backStackEntry ->
                             val plantName = backStackEntry.arguments?.getString("plantName")
-                            val plant = HomeRepository.getAllPlants().find { it.name == plantName }
-                            PlantDetailsScreen(navController, plant)
+                            PlantDetailsScreen(navController = navController, plantName = plantName)
                         }
 
                     }
