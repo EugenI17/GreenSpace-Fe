@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,10 +47,15 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
   var errorMessage by remember { mutableStateOf<String?>(null) }
   var successMessage by remember { mutableStateOf<String?>(null) }
 
+  val focusManager = LocalFocusManager.current
+
   Box(
     modifier = Modifier
       .fillMaxSize()
-      .background(Color(0xFFd1d5ca)),
+      .background(Color(0xFFd1d5ca))
+      .clickable {
+        focusManager.clearFocus()
+      },
     contentAlignment = Alignment.Center
   ) {
     IconButton(
@@ -115,7 +122,8 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
           unfocusedBorderColor = Color.White,
           focusedLabelColor = Color.White,
           unfocusedLabelColor = Color.White
-        )
+        ),
+        singleLine = true
       )
       OutlinedTextField(
         value = city,
@@ -131,7 +139,8 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
           unfocusedBorderColor = Color.White,
           focusedLabelColor = Color.White,
           unfocusedLabelColor = Color.White
-        )
+        ),
+        singleLine = true
       )
       errorMessage?.let {
         Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
@@ -143,6 +152,7 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
 
       Button(
         onClick = {
+          focusManager.clearFocus() // Dismiss the keyboard when the button is clicked
           if (name.text.isEmpty() || city.text.isEmpty()) {
             errorMessage = "Please fill in all fields."
             successMessage = null

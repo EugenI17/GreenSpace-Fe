@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -37,6 +38,7 @@ import ro.upt.greenspace.service.ApiClient
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.ui.platform.LocalFocusManager
 
 @Composable
 fun CameraPage(
@@ -49,6 +51,7 @@ fun CameraPage(
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val focusManager = LocalFocusManager.current
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -62,6 +65,8 @@ fun CameraPage(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFd1d5ca))
+            .clickable { focusManager.clearFocus() },
+        contentAlignment = Alignment.Center
     ) {
         SnackbarHost(
             hostState = snackbarHostState,
@@ -69,7 +74,10 @@ fun CameraPage(
         )
 
         IconButton(
-            onClick = { navController.navigateUp() },
+            onClick = {
+                focusManager.clearFocus()
+                navController.navigateUp()
+            },
             modifier = Modifier
                 .padding(20.dp)
                 .align(Alignment.TopStart)
@@ -103,6 +111,7 @@ fun CameraPage(
             SaveButton(
                 isLoading = isLoading,
                 onClick = {
+                    focusManager.clearFocus()
                     if (photoBitmap != null && name.text.isNotEmpty()) {
                         isLoading = true
                         scope.launch {
@@ -112,7 +121,10 @@ fun CameraPage(
                                 homeId = homeId,
                                 name = name.text,
                                 photoBitmap = photoBitmap!!,
-                                snackbarHostState = snackbarHostState
+                                snackbarHostState = snackbarHostState,
+                                onSuccess = {
+                                    navController.navigateUp()
+                                }
                             )
                             isLoading = false
                         }
@@ -222,22 +234,46 @@ suspend fun handleSavePlant(
     homeId: Int,
     name: String,
     photoBitmap: Bitmap,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    onSuccess: () -> Unit
 ) {
     try {
         Log.d("handleSavePlant", "Preparing to send plant data...")
+
         val jsonPayload = """
             {
                 "name": "$name",
                 "home": $homeId
             }
         """.trimIndent()
-
         Log.d("handleSavePlant", "JSON Payload: $jsonPayload")
         val plantRequestBody = jsonPayload.toRequestBody("application/json".toMediaTypeOrNull())
+
         val byteArrayOutputStream = java.io.ByteArrayOutputStream()
-        photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        val isCompressed = photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        if (!isCompressed) {
+            Log.e("handleSavePlant", "Failed to compress bitmap")
+            snackbarHostState.showSnackbar(
+                message = "Failed to process image",
+                actionLabel = "OK",
+                duration = SnackbarDuration.Short
+            )
+            return
+        }
+
         val photoBytes = byteArrayOutputStream.toByteArray()
+        Log.d("handleSavePlant", "Image byte size: ${photoBytes.size}")
+
+        if (photoBytes.isEmpty()) {
+            Log.e("handleSavePlant", "Image byte array is empty")
+            snackbarHostState.showSnackbar(
+                message = "Error: Image data is empty",
+                actionLabel = "OK",
+                duration = SnackbarDuration.Short
+            )
+            return
+        }
+
         val imagePart = MultipartBody.Part.createFormData(
             name = "image",
             filename = "photo.jpg",
@@ -254,6 +290,7 @@ suspend fun handleSavePlant(
             actionLabel = "OK",
             duration = SnackbarDuration.Short
         )
+        onSuccess()
     } catch (e: Exception) {
         Log.e("handleSavePlant", "Error creating plant: ${e.message}", e)
         snackbarHostState.showSnackbar(
@@ -263,4 +300,3 @@ suspend fun handleSavePlant(
         )
     }
 }
-

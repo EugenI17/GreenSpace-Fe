@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -92,7 +91,16 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
         ) {
             Text(
                 text = home.name,
-                style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold),
+                style = TextStyle(
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF1B5E20),
+                            Color(0xFF4E342E)
+                        )
+                    )
+                ),
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
@@ -193,7 +201,16 @@ fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController
 
             Text(
                 text = plant.name,
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF1B5E20),
+                            Color(0xFF4E342E)
+                        )
+                    )
+                ),
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
