@@ -1,6 +1,7 @@
 package ro.upt.greenspace
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -44,9 +45,6 @@ class AddHome : ComponentActivity() {
 fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
   var name by remember { mutableStateOf(TextFieldValue("")) }
   var city by remember { mutableStateOf(TextFieldValue("")) }
-  var errorMessage by remember { mutableStateOf<String?>(null) }
-  var successMessage by remember { mutableStateOf<String?>(null) }
-
   val focusManager = LocalFocusManager.current
 
   Box(
@@ -142,33 +140,23 @@ fun AddHomeScreen(navController: androidx.navigation.NavHostController) {
         ),
         singleLine = true
       )
-      errorMessage?.let {
-        Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
-      }
-
-      successMessage?.let {
-        Text(text = it, color = Color.Green, modifier = Modifier.padding(bottom = 16.dp))
-      }
 
       Button(
         onClick = {
-          focusManager.clearFocus() // Dismiss the keyboard when the button is clicked
-          if (name.text.isEmpty() || city.text.isEmpty()) {
-            errorMessage = "Please fill in all fields."
-            successMessage = null
-          } else {
-            errorMessage = null
+          focusManager.clearFocus()
+          if (name.text.isNotEmpty() && city.text.isNotEmpty()) {
             createHomeApiCall(
               name = name.text,
               city = city.text,
               onSuccess = {
-                successMessage = "Home added successfully!"
                 navController.navigateUp()
               },
               onError = { error ->
-                errorMessage = error
+                Log.e("AddHomeScreen", "Error: $error")
               }
             )
+          } else {
+            Log.e("AddHomeScreen", "Please fill in all fields.")
           }
         },
         modifier = Modifier

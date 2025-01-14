@@ -19,5 +19,5 @@ interface HomeApiService {
     suspend fun createHome(@Body home: HomeRequest): Home
 
     @DELETE("api/v1/homes/{homeId}")
-    suspend fun deleteHome(@Path("homeId") homeId: Long)
+    suspend fun deleteHome(@Path("homeId") homeId: Int)
 }

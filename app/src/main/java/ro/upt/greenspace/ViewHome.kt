@@ -1,5 +1,6 @@
 package ro.upt.greenspace
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import ro.upt.greenspace.models.Home
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId: Int?) {
@@ -66,11 +70,14 @@ fun ViewHomeScreen(navController: androidx.navigation.NavHostController, homeId:
 
 @Composable
 fun HomeContent(navController: androidx.navigation.NavHostController, home: Home) {
+    val scope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFd1d5ca))
     ) {
+        // Back button
         IconButton(
             onClick = { navController.navigateUp() },
             modifier = Modifier
@@ -89,6 +96,7 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                 .padding(horizontal = 16.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Home name
             Text(
                 text = home.name,
                 style = TextStyle(
@@ -104,6 +112,7 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
+            // Plant list or message
             if (home.plants.isEmpty()) {
                 Text(
                     text = "No plants available in this home.",
@@ -122,7 +131,8 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
             }
         }
 
-        Box(
+        // Bottom buttons (Add Plant and Delete Home)
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
@@ -133,8 +143,10 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                             Color(0xFF5A8A64)
                         )
                     )
-                ),
-            contentAlignment = Alignment.Center
+                )
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
                 onClick = {
@@ -142,14 +154,13 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .height(60.dp)
-                    .width(120.dp)
+                    .height(50.dp)
+                    .width(140.dp)
             ) {
                 Text(
-                    text = "Add",
+                    text = "Add Plant",
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         brush = Brush.horizontalGradient(
                             colors = listOf(
@@ -157,6 +168,32 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                                 Color(0xFF4E342E)
                             )
                         )
+                    )
+                )
+            }
+
+            Button(
+                onClick = {
+                    scope.launch {
+                        try {
+                            HomeRepository.deleteHomeById(home.id)
+                            navController.navigateUp()
+                        } catch (e: Exception) {
+                            Log.e("DeleteHome", "Failed to delete home: ${e.message}")
+                        }
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(140.dp)
+            ) {
+                Text(
+                    text = "Delete Home",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
                 )
             }
@@ -216,6 +253,8 @@ fun PlantCard(plant: Plant, navController: androidx.navigation.NavHostController
         }
     }
 }
+
+
 
 
 

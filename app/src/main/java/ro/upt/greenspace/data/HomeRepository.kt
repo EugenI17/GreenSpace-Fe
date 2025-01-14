@@ -25,4 +25,14 @@ object HomeRepository {
             }
         }
     }
+
+    suspend fun deleteHomeById(homeId: Int) {
+        withContext(Dispatchers.IO) {
+            try {
+                ApiClient.homeApiService.deleteHome(homeId)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
 }
