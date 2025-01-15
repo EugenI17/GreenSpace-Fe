@@ -28,6 +28,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import ro.upt.greenspace.data.PlantRepository
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun PlantDetailsScreen(navController: NavHostController, plantName: String?) {
@@ -101,7 +103,9 @@ fun PlantDetailsScreen(navController: NavHostController, plantName: String?) {
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
-                    .padding(50.dp),
+                    .padding(50.dp)
+                    .height(500.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.Start
             ) {
                 val imageBitmap = plant!!.image?.let { base64Image ->
@@ -171,6 +175,15 @@ fun PlantDetailsScreen(navController: NavHostController, plantName: String?) {
                 )
                 Text(
                     text = "Light: ${plant!!.light}",
+                    style = TextStyle(
+                        fontSize = 22.sp,
+                        color = Color.White,
+                        lineHeight = 28.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+                Text(
+                    text = "Suggestion: ${plant!!.suggestion}",
                     style = TextStyle(
                         fontSize = 22.sp,
                         color = Color.White,

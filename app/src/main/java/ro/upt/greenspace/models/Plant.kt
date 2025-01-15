@@ -7,12 +7,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 
 data class Plant(
+    val id: Int,
     val name: String,
     val type: String,
     val family: String,
     val water: String,
     val light: String,
-    val image: String?
+    val image: String?,
+    val suggestion: String,
 ) {
     fun getImageBitmap(): Bitmap? {
         return try {
