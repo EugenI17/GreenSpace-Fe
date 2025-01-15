@@ -93,7 +93,7 @@ fun PlantDetailsScreen(navController: NavHostController, plantName: String?) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 15.dp)
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
@@ -103,7 +103,7 @@ fun PlantDetailsScreen(navController: NavHostController, plantName: String?) {
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
-                    .padding(50.dp)
+                    .padding(30.dp)
                     .height(500.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.Start
