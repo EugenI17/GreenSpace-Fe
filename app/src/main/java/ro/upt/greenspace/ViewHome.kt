@@ -77,7 +77,6 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
             .fillMaxSize()
             .background(Color(0xFFd1d5ca))
     ) {
-        // Back button
         IconButton(
             onClick = { navController.navigateUp() },
             modifier = Modifier
@@ -96,7 +95,6 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                 .padding(horizontal = 16.dp, vertical = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Home name
             Text(
                 text = home.name,
                 style = TextStyle(
@@ -112,7 +110,6 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Plant list or message
             if (home.plants.isEmpty()) {
                 Text(
                     text = "No plants available in this home.",
@@ -131,7 +128,6 @@ fun HomeContent(navController: androidx.navigation.NavHostController, home: Home
             }
         }
 
-        // Bottom buttons (Add Plant and Delete Home)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
